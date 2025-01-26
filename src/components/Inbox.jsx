@@ -12,15 +12,12 @@ import { RiInbox2Fill } from "react-icons/ri";
 import { onSnapshot, orderBy } from "firebase/firestore";
 import { collection, query } from "firebase/firestore";
 import { db } from "../firebase";
-import Msg from "./Msg"
+import Msg from "./Msg";
 import { useDispatch, useSelector } from "react-redux";
 import { setemail } from "../redux/Slicer";
 
-
-
 function Inbox() {
-
-  const emails = useSelector((store)=>store.app.allemails)
+  const emails = useSelector((store) => store.app.allemails);
   const dispatch = useDispatch();
   const [mailnumber, setmailnumber] = useState(0);
 
@@ -55,46 +52,66 @@ function Inbox() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
+  const search = useSelector((store) => store.app.searchtext);
+  const allemail = useSelector((store) => store.app.allemails);
+
+  const [filterdata, setfilterdata] = useState(allemail);
+
+  useEffect(() => {
+    const filtereddata = allemail?.filter((e) =>
+      e?.to?.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setfilterdata(filtereddata);
+  }, [search, allemail]);
+
   return (
-    <div className="h-screen w-full bg-white rounded ">
-      <div className="h-8 w-full flex p-2 justify-between">
-        <div className="left-icons flex gap-3 ">
-          <FaCheckSquare size={"1.1rem"} />
-          <IoMdArrowDropdown size={"1.1rem"} />
-          <IoIosRefresh size={"1.1rem"} />
-          <BsThreeDotsVertical size={"1.1rem"} />
+    <div className="h-screen w-full bg-white rounded">
+      {/* Header */}
+      <div className="h-10 w-full flex p-2 justify-between items-center border-b">
+        <div className="left-icons flex gap-3">
+          <FaCheckSquare size={"1.1rem"} className="cursor-pointer" />
+          <IoMdArrowDropdown size={"1.1rem"} className="cursor-pointer" />
+          <IoIosRefresh size={"1.1rem"} className="cursor-pointer" />
+          <BsThreeDotsVertical size={"1.1rem"} className="cursor-pointer" />
         </div>
-        <div className="right-icons flex ">
-          <IoIosArrowBack size={"1.1rem"} />
-          <IoIosArrowForward size={"1.1rem"} />
+        <div className="right-icons flex gap-2">
+          <IoIosArrowBack
+            size={"1.1rem"}
+            className="cursor-pointer text-gray-600"
+          />
+          <IoIosArrowForward
+            size={"1.1rem"}
+            className="cursor-pointer text-gray-600"
+          />
         </div>
       </div>
-      {/* promotion */}
-      <div className="h-16 w-full flex border-b-black border">
+
+      {/* Promotions */}
+      <div className="h-16 w-full flex border-b overflow-x-auto">
         {promotionicons.map((e, index) => (
           <div
             className={`${
               mailnumber === index
                 ? "border-b-4 border-blue-500 text-blue-500"
-                : "bg-white"
-            } px-12 cursor-pointer flex items-center`}
+                : "text-gray-700"
+            } px-4 md:px-8 flex items-center cursor-pointer whitespace-nowrap`}
             key={index}
             onClick={() => setmailnumber(index)}
           >
             <a>{e.icons}</a>
-            <p className="text-l">{e.text}</p>
+            <p className="text-sm md:text-l ml-2">{e.text}</p>
           </div>
         ))}
       </div>
-        
-        {
-          emails && emails.map((e)=>{
-            return (
-              <Msg values={e}></Msg>
-            )
-          })
-        }
-     
+
+      {/* Messages */}
+      <div className="overflow-y-auto h-[calc(100vh-8rem)] p-4">
+        {filterdata &&
+          filterdata.map((e) => {
+            return <Msg key={e.id} values={e} />;
+          })}
+      </div>
     </div>
   );
 }

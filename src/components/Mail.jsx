@@ -5,9 +5,13 @@ import { IoIosInformationCircleOutline, IoIosMailUnread } from "react-icons/io";
 import { MdDelete, MdOutlineSimCardDownload } from "react-icons/md";
 import { useNavigate } from "react-router";
 import Compose from "./Compose";
+import { useSelector } from "react-redux";
 
 function Mail() {
     const navigate = useNavigate()
+    const email = useSelector((store)=>store.app.selectedmails)
+    console.log(email)
+
 
     function handleback(){
         navigate("/")
@@ -26,12 +30,12 @@ function Mail() {
 
       <div className="read h-screen w-full">
         <div className="subject">
-          <h1 className="text-2xl font-bold p-4">Subject</h1>
+          <h1 className="text-2xl font-bold p-4">{email?.subject}</h1>
 
-          <p className="text-l p-4">biswajit9348@gmail.com<br/> <span>to me</span></p>
+          <p className="text-l p-4">{email?.to}<br/> <span>to me</span></p>
         </div>
 
-        <h1 className="p-4">Message</h1>
+        <h1 className="p-4">{email?.message}</h1>
         <Compose/>
       </div>
     </div>

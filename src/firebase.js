@@ -1,9 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth/cordova";
+import { getAuth } from "firebase/auth"; 
 import { getFirestore } from "firebase/firestore";
-import { GoogleAuthProvider } from "firebase/auth/web-extension";
+import { GoogleAuthProvider } from "firebase/auth"; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyAsv15Lx9yFeiRKU80-MhNesZsTIQJbk7Y",

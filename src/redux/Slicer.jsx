@@ -4,7 +4,10 @@ const Cardslicer = createSlice({
     name:"open",
     initialState:{
         value : false,
-        allemails:[]
+        allemails:[],
+        selectedmails:null,
+        searchtext:"",
+        user:null
     },
     reducers:{
         open:(state,action)=>{
@@ -12,9 +15,18 @@ const Cardslicer = createSlice({
         },
         setemail:(state,action)=>{
             state.allemails=action.payload
+        },
+        setselectedemail:(state,action)=>{
+            state.selectedmails=action.payload
+        },
+        setsearchtext:(state,action)=>{
+            state.searchtext=action.payload
+        },
+        setuser:(state,action)=>{
+            state.user=action.payload
         }
     }
 })
 
-export const {open,setemail} = Cardslicer.actions
+export const {open,setemail,setselectedemail,setsearchtext,setuser} = Cardslicer.actions
 export default Cardslicer.reducer
