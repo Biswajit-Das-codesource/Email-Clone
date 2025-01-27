@@ -3,15 +3,28 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaArrowLeft, FaShare } from "react-icons/fa";
 import { IoIosInformationCircleOutline, IoIosMailUnread } from "react-icons/io";
 import { MdDelete, MdOutlineSimCardDownload } from "react-icons/md";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Compose from "./Compose";
 import { useSelector } from "react-redux";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 
 function Mail() {
     const navigate = useNavigate()
     const email = useSelector((store)=>store.app.selectedmails)
     console.log(email)
 
+    const deletemail = async(id) =>{
+      try{
+        await deleteDoc(doc(db,"emails",id))
+        navigate("/")
+      }
+      catch(err){
+        console.log(err)
+      }
+    }
+
+    const {id} =useParams()
 
     function handleback(){
         navigate("/")
@@ -22,7 +35,7 @@ function Mail() {
         <FaArrowLeft size={"1.2rem"} onClick={handleback} className="cursor-pointer"/>
         <MdOutlineSimCardDownload size={"1.2rem"} />
         <IoIosInformationCircleOutline size={"1.2rem"} />
-        <MdDelete size={"1.2rem"} />
+        <MdDelete size={"1.2rem"} onClick={()=>deletemail(id)} className="cursor-pointer"/>
         <IoIosMailUnread size={"1.2rem"} />
         <FaShare size={"1.2rem"} />
         <BsThreeDotsVertical size={"1.2rem"} />

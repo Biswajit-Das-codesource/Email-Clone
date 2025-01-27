@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import Avatar from "react-avatar";
-import { CiCircleQuestion, CiSearch } from "react-icons/ci";
+import { CiSearch } from "react-icons/ci";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useDispatch } from "react-redux";
-import { open, setsearchtext } from "../redux/Slicer";
+import { useDispatch, useSelector } from "react-redux";
+import { open, setsearchtext, setuser } from "../redux/Slicer";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 function Navbar() {
   const [searchtext, setText] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -14,7 +17,17 @@ function Navbar() {
   }, [searchtext]);
 
 
-  
+  const user = useSelector((store)=>store.app.user)
+   console.log(user)
+  async function handleSignOut() {
+    try {
+      await signOut(auth);
+      dispatch(setuser(null))
+      console.log("User signed out successfully");
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  }
 
   return (
     <>
@@ -45,12 +58,30 @@ function Navbar() {
         </div>
 
         {/* Extra Icons */}
-        <div className="extra w-[20%] bg-transparent h-[2.5rem] flex justify-around items-center">
-          <Avatar
-            src="https://media.istockphoto.com/id/1332100919/vector/man-icon-black-icon-person-symbol.jpg?s=612x612&w=0&k=20&c=AVVJkvxQQCuBhawHrUhDRTCeNQ3Jgt0K1tXjJsFy1eg="
-            size="40"
-            round={true}
-          ></Avatar>
+        <div className="extra relative w-[20%] bg-transparent h-[2.5rem] flex justify-around items-center">
+          {/* Avatar */}
+          <div
+            className="relative cursor-pointer"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <Avatar
+              src={`${user.photourl}`}
+              size="40"
+              round={true}
+            />
+          </div>
+
+          {/* Dropdown */}
+          {dropdownOpen && (
+            <div className="absolute top-12 right-0 w-40 bg-white border border-gray-300 shadow-md rounded-md z-10">
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
